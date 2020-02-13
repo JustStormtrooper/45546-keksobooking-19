@@ -1,11 +1,11 @@
-'use stricr';
+'use strict';
 
 var OFFER_NUM = 8;
 var Y_LOCATION_RANGE = [130, 630];
 var OFFER_TYPE = ['palace', 'flat', 'house', 'bungalo'];
 var OFFER_CHECK_IN_OUT = ['12:00', '13:00', '14:00'];
 var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
+var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var MAX_PHOTO_NUM = 10;
 var MAP_PIN_WIDTH = 50;
 var MAP_PIN_HEIGHT = 70;
@@ -21,14 +21,14 @@ function generateOffers() {
   var rentalOffers = [];
 
   for (var i = 0; i < OFFER_NUM; i++) {
-    var authorAvatar = {}
+    var authorAvatar = {};
     authorAvatar.avatar = 'img/avatars/user0' + (i + 1) + '.png';
 
     var offerLocation = {};
     offerLocation.x = Math.round(Math.random() * mapPins.offsetWidth);
     offerLocation.y = Math.round(Math.random() * (Y_LOCATION_RANGE[1] - Y_LOCATION_RANGE[0]) + Y_LOCATION_RANGE[0]);
 
-    var offerInfo = {}
+    var offerInfo = {};
     offerInfo.title = 'Lorem ipsum dolor';
     offerInfo.address = offerLocation.x + ', ' + offerLocation.y;
     offerInfo.price = Math.round(Math.random() * 100000);
@@ -62,7 +62,7 @@ function getRandomPhotos(n) {
   return photos;
 }
 
-function addOfferToMap (offers) {
+function addOfferToMap(offers) {
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < OFFER_NUM; i++) {
@@ -89,7 +89,3 @@ function showOffers() {
 }
 
 showOffers();
-
-
-
-
