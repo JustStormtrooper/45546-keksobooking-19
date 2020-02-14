@@ -11,7 +11,7 @@ var MAP_PIN_WIDTH = 50;
 var MAP_PIN_HEIGHT = 70;
 
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var mapPins = document.querySelector('.map__pins');
+var mapPinsElement = document.querySelector('.map__pins');
 
 function showOfferMap() {
   document.querySelector('.map').classList.remove('map--faded');
@@ -25,7 +25,7 @@ function generateOffers() {
     authorAvatar.avatar = 'img/avatars/user0' + (i + 1) + '.png';
 
     var offerLocation = {};
-    offerLocation.x = Math.round(Math.random() * mapPins.offsetWidth);
+    offerLocation.x = Math.round(Math.random() * mapPinsElement.offsetWidth);
     offerLocation.y = Math.round(Math.random() * (Y_LOCATION_RANGE[1] - Y_LOCATION_RANGE[0]) + Y_LOCATION_RANGE[0]);
 
     var offerInfo = {};
@@ -52,10 +52,10 @@ function generateOffers() {
   return rentalOffers;
 }
 
-function getRandomPhotos(n) {
+function getRandomPhotos(photoAmount) {
   var photos = [];
 
-  for (var i = 0; i < n; i++) {
+  for (var i = 0; i < photoAmount; i++) {
     photos.push(OFFER_PHOTOS[Math.floor(Math.random() * OFFER_PHOTOS.length)]);
   }
 
@@ -69,7 +69,7 @@ function addOfferToMap(offers) {
     fragment.appendChild(renderOffer(offers[i]));
   }
 
-  mapPins.appendChild(fragment);
+  mapPinsElement.appendChild(fragment);
 }
 
 function renderOffer(offer) {
