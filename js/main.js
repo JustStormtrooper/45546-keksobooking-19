@@ -10,8 +10,6 @@ var MAX_PHOTO_NUM = 10;
 var MAP_PIN_WIDTH = 50;
 var MAP_PIN_HEIGHT = 70;
 
-var isMapActive = false;
-
 var mapElement = document.querySelector('.map');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapPinsElement = document.querySelector('.map__pins');
@@ -22,11 +20,15 @@ var adFormAddressElement = adFormElement.querySelector('input[name=address]');
 var adFormRoomsElement = adFormElement.querySelector('select[name=rooms]');
 var adFormGuestsElement = adFormElement.querySelector('select[name=capacity]');
 
+var isMapActive = false;
+var mapPinMainLeft = parseInt(mapPinMainElement.style.left, 10);
+var mapPinMainTop = parseInt(mapPinMainElement.style.top, 10);
 var mapPinsFieldWidth = mapPinsElement.offsetWidth;
 var mapPinMainWidth = mapPinMainElement.offsetWidth;
 var mapPinMainHeight = mapPinMainElement.offsetHeight;
 var mapPinMainHeightActive = mapPinMainHeight + 22;
 
+adFormAddressElement.readOnly = true;
 
 function showOfferMap() {
   mapElement.classList.remove('map--faded');
@@ -101,25 +103,21 @@ function renderOffer(offer) {
   return offerElement;
 }
 
-function setFormElementsState(formItem, state) {
-  var formChildren = formItem.children;
+function setFormElementsState(formElement, formItemState) {
+  var formChildren = formElement.children;
   for (var i = 0; i < formChildren.length; i++) {
-    formChildren[i].disabled = state;
+    formChildren[i].disabled = !formItemState;
   }
 }
 
-function activatePage() {
-  setFormElementsState(mapFiltersElement, false);
-  setFormElementsState(adFormElement, false);
-  showOffers();
-  isMapActive = true;
-}
-
-function deactivatePage() {
-  setFormElementsState(mapFiltersElement, true);
-  setFormElementsState(adFormElement, true);
-  isMapActive = false;
-  fillAddressField(parseInt(mapPinMainElement.style.left), parseInt(mapPinMainElement.style.top));
+function setPageState(pageState) {
+  isMapActive = pageState;
+  setFormElementsState(mapFiltersElement, pageState);
+  setFormElementsState(adFormElement, pageState);
+  fillAddressField(mapPinMainLeft, mapPinMainTop);
+  if (pageState) {
+    showOffers();
+  }
 }
 
 function showOffers() {
@@ -134,25 +132,61 @@ function fillAddressField(x, y) {
   var newX = Math.round(x + mapPinMainWidth / 2);
   var newY = Math.round(y + (isMapActive ? mapPinMainHeightActive : mapPinMainHeight / 2));
 
-  adFormAddressElement.value = (newX < 0 ? 0 : newX > mapPinsFieldWidth ? mapPinsFieldWidth : newX)  + ', ' +
-  (newY < Y_LOCATION_RANGE[0] ? Y_LOCATION_RANGE[0] : newY > Y_LOCATION_RANGE[1] ? Y_LOCATION_RANGE[1] : newY);
+  if (newX < 0) {
+    newX = 0;
+  } else if (newX > mapPinsFieldWidth) {
+    newX = mapPinsFieldWidth;
+  }
+
+  if (newY < Y_LOCATION_RANGE[0]) {
+    newY = Y_LOCATION_RANGE[0];
+  } else if (newY > Y_LOCATION_RANGE[1]) {
+    newY = Y_LOCATION_RANGE[1];
+  }
+
+  adFormAddressElement.value = newX + ', ' + newY;
 }
 
+function checkRoomsGuestsCorrespondence() {
+  var rooms = +adFormRoomsElement.value;
+  var guests = +adFormGuestsElement.value;
 
+  if (rooms === 1 && guests !== 1) {
+    adFormGuestsElement.setCustomValidity('Не более одного гостя.');
+  } else if (rooms === 2 && (guests > 2 || !guests)) {
+    adFormGuestsElement.setCustomValidity('Один или два гостя.');
+  } else if (rooms === 3 && (guests > 3 || !guests)) {
+    adFormGuestsElement.setCustomValidity('От одного до трех гостей.');
+  } else if (rooms === 100 && guests !== 0) {
+    adFormGuestsElement.setCustomValidity('Не предназначено для гостей.');
+  } else {
+    adFormGuestsElement.setCustomValidity('');
+  }
+}
 
 // Listeners
 mapPinMainElement.addEventListener('mousedown', function (evt) {
-  if (evt.button == 0 && !isMapActive) {
-    activatePage();
-    fillAddressField(parseInt(mapPinMainElement.style.left), parseInt(mapPinMainElement.style.top));
+  if (!evt.button && !isMapActive) {
+    setPageState(true);
   }
 });
 
 mapPinMainElement.addEventListener('click', function () {
   if (!isMapActive) {
-    activatePage();
+    setPageState(true);
   }
 });
 
+adFormRoomsElement.addEventListener('change', function () {
+  checkRoomsGuestsCorrespondence();
+});
 
-deactivatePage();
+adFormGuestsElement.addEventListener('change', function () {
+  checkRoomsGuestsCorrespondence();
+});
+
+window.addEventListener('load', function () {
+  checkRoomsGuestsCorrespondence();
+});
+
+setPageState(false);
