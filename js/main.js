@@ -9,6 +9,7 @@ var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http:
 var MAX_PHOTO_NUM = 10;
 var MAP_PIN_WIDTH = 50;
 var MAP_PIN_HEIGHT = 70;
+var MAP_PIN_MAIN_HEIGHT_ADD = 22;
 
 var mapElement = document.querySelector('.map');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -20,13 +21,13 @@ var adFormAddressElement = adFormElement.querySelector('input[name=address]');
 var adFormRoomsElement = adFormElement.querySelector('select[name=rooms]');
 var adFormGuestsElement = adFormElement.querySelector('select[name=capacity]');
 
-var isMapActive = false;
 var mapPinMainLeft = parseInt(mapPinMainElement.style.left, 10);
 var mapPinMainTop = parseInt(mapPinMainElement.style.top, 10);
 var mapPinsFieldWidth = mapPinsElement.offsetWidth;
 var mapPinMainWidth = mapPinMainElement.offsetWidth;
 var mapPinMainHeight = mapPinMainElement.offsetHeight;
-var mapPinMainHeightActive = mapPinMainHeight + 22;
+var mapPinMainHeightActive = mapPinMainHeight + MAP_PIN_MAIN_HEIGHT_ADD;
+var addressOffsetY = mapPinMainHeight / 2;
 
 adFormAddressElement.readOnly = true;
 
@@ -110,13 +111,22 @@ function setFormElementsState(formElement, formItemState) {
   }
 }
 
-function setPageState(pageState) {
-  isMapActive = pageState;
-  setFormElementsState(mapFiltersElement, pageState);
-  setFormElementsState(adFormElement, pageState);
+function setPageInactive() {
+  setFormElementsState(mapFiltersElement, false);
+  setFormElementsState(adFormElement, false);
   fillAddressField(mapPinMainLeft, mapPinMainTop);
-  if (pageState) {
+}
+
+function setPageActive(evt) {
+  if ((evt.type === 'mousedown' && !evt.button) || evt.type === 'click') {
+    addressOffsetY = mapPinMainHeightActive;
+    setFormElementsState(mapFiltersElement, true);
+    setFormElementsState(adFormElement, true);
+    fillAddressField(mapPinMainLeft, mapPinMainTop);
     showOffers();
+    checkRoomsGuestsCorrespondence();
+    mapPinMainElement.removeEventListener('mousedown', setPageActive);
+    mapPinMainElement.removeEventListener('click', setPageActive);
   }
 }
 
@@ -127,10 +137,9 @@ function showOffers() {
   addOfferToMap(offers);
 }
 
-
 function fillAddressField(x, y) {
   var newX = Math.round(x + mapPinMainWidth / 2);
-  var newY = Math.round(y + (isMapActive ? mapPinMainHeightActive : mapPinMainHeight / 2));
+  var newY = Math.round(y + addressOffsetY);
 
   if (newX < 0) {
     newX = 0;
@@ -152,7 +161,7 @@ function checkRoomsGuestsCorrespondence() {
   var guests = +adFormGuestsElement.value;
 
   if (rooms === 1 && guests !== 1) {
-    adFormGuestsElement.setCustomValidity('Не более одного гостя.');
+    adFormGuestsElement.setCustomValidity('Только для одного гостя.');
   } else if (rooms === 2 && (guests > 2 || !guests)) {
     adFormGuestsElement.setCustomValidity('Один или два гостя.');
   } else if (rooms === 3 && (guests > 3 || !guests)) {
@@ -165,17 +174,9 @@ function checkRoomsGuestsCorrespondence() {
 }
 
 // Listeners
-mapPinMainElement.addEventListener('mousedown', function (evt) {
-  if (!evt.button && !isMapActive) {
-    setPageState(true);
-  }
-});
+mapPinMainElement.addEventListener('mousedown', setPageActive);
 
-mapPinMainElement.addEventListener('click', function () {
-  if (!isMapActive) {
-    setPageState(true);
-  }
-});
+mapPinMainElement.addEventListener('click', setPageActive);
 
 adFormRoomsElement.addEventListener('change', function () {
   checkRoomsGuestsCorrespondence();
@@ -185,8 +186,4 @@ adFormGuestsElement.addEventListener('change', function () {
   checkRoomsGuestsCorrespondence();
 });
 
-window.addEventListener('load', function () {
-  checkRoomsGuestsCorrespondence();
-});
-
-setPageState(false);
+setPageInactive();
