@@ -16,19 +16,19 @@
   function showOffers() {
     window.data.createOffersMap();
     showOfferMap();
-    window.form.enableAdForm();
+    window.form.enableAd();
   }
 
   function setPageInactive() {
-    window.form.setFormElementsState(mapFiltersElement, false);
-    window.form.setFormElementsState(adFormElement, false);
+    window.form.setElementsState(mapFiltersElement, false);
+    window.form.setElementsState(adFormElement, false);
     window.form.fillAddressField(mapPinMainLeft, mapPinMainTop, false);
   }
 
   function setPageActive(evt) {
     if ((evt.type === 'mousedown' && !evt.button) || evt.type === 'click') {
-      window.form.setFormElementsState(mapFiltersElement, true);
-      window.form.setFormElementsState(adFormElement, true);
+      window.form.setElementsState(mapFiltersElement, true);
+      window.form.setElementsState(adFormElement, true);
       window.form.fillAddressField(mapPinMainLeft, mapPinMainTop, true);
       showOffers();
       window.form.checkRoomsGuestsCorrespondence();

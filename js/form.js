@@ -19,11 +19,11 @@
 
   adFormAddressElement.readOnly = true;
 
-  function enableAdForm() {
+  function enableAd() {
     adFormElement.classList.remove('ad-form--disabled');
   }
 
-  function setFormElementsState(formElement, formItemState) {
+  function setElementsState(formElement, formItemState) {
     var formChildren = formElement.children;
     for (var i = 0; i < formChildren.length; i++) {
       formChildren[i].disabled = !formItemState;
@@ -75,8 +75,8 @@
   });
 
   window.form = {
-    enableAdForm: enableAdForm,
-    setFormElementsState: setFormElementsState,
+    enableAd: enableAd,
+    setElementsState: setElementsState,
     fillAddressField: fillAddressField,
     checkRoomsGuestsCorrespondence: checkRoomsGuestsCorrespondence
   };
