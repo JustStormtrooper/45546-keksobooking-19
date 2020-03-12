@@ -3,14 +3,23 @@
 (function () {
   var MAP_PIN_WIDTH = 50;
   var MAP_PIN_HEIGHT = 70;
+  var MAX_NUM_OFFERS = 5;
+  var numMapOffers;
 
+  var loadedOffers = [];
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mapPinsElement = document.querySelector('.map__pins');
 
   function addOfferToMap(offers) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < offers.length; i++) {
+    var currentMapPins = mapPinsElement.querySelectorAll('button[type=button]');
+    for (var i = 0; i < currentMapPins.length; i++) {
+      mapPinsElement.removeChild(currentMapPins[i]);
+    }
+
+    numMapOffers = offers.length < MAX_NUM_OFFERS ? offers.length : MAX_NUM_OFFERS;
+    for (i = 0; i < numMapOffers; i++) {
       if (offers[i].offer !== null) {
         fragment.appendChild(renderOffer(offers[i]));
       }
@@ -29,12 +38,23 @@
     return offerElement;
   }
 
+  function onSuccessLoad(data) {
+    loadedOffers = data;
+    addOfferToMap(data);
+  }
+
   function createOffersMap() {
-    window.backend.load(addOfferToMap);
+    window.backend.load(onSuccessLoad);
+  }
+
+  function getLoadedData() {
+    return loadedOffers;
   }
 
   window.data = {
-    createOffersMap: createOffersMap
+    createOffersMap: createOffersMap,
+    addOfferToMap: addOfferToMap,
+    getLoadedData: getLoadedData
   };
 
 })();
