@@ -21,14 +21,11 @@
     numMapOffers = offers.length < MAX_NUM_OFFERS ? offers.length : MAX_NUM_OFFERS;
     for (i = 0; i < numMapOffers; i++) {
       if (offers[i].offer !== null) {
-        fragment.appendChild(renderOffer(offers[i]));
+        var offerElement = renderOffer(offers[i]);
+        fragment.appendChild(offerElement);
+        addMapPinListeners(offerElement, offers[i]);
       }
     }
-
-    if (offers[0]) {
-      window.card.createOffer(offers[0]);
-    }
-
     mapPinsElement.appendChild(fragment);
   }
 
@@ -40,6 +37,17 @@
     offerElement.querySelector('img').alt = offer.offer.title;
 
     return offerElement;
+  }
+
+  function addMapPinListeners(mapPinElement, offer) {
+    mapPinElement.addEventListener('click', function () {
+      window.card.createOffer(offer);
+      mapPinElement.classList.add('map__pin--active');
+    });
+  }
+
+  function removePinActive() {
+    document.querySelector('.map__pin--active').classList.remove('map__pin--active');
   }
 
   function onSuccessLoad(data) {
@@ -58,7 +66,8 @@
   window.data = {
     createOffersMap: createOffersMap,
     addOfferToMap: addOfferToMap,
-    getLoadedOffers: getLoadedOffers
+    getLoadedOffers: getLoadedOffers,
+    removePinActive: removePinActive
   };
 
 })();
