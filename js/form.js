@@ -4,6 +4,7 @@
 
   var Y_LOCATION_RANGE = [130, 630];
   var MAP_PIN_MAIN_HEIGHT_ADD = 22;
+  var OFFER_TYPES_MIN_PRICE = {flat: 1000, bungalo: 0, house: 5000, palace: 10000};
 
   var mapElement = document.querySelector('.map');
   var mapPinsElement = document.querySelector('.map__pins');
@@ -12,6 +13,10 @@
   var adFormAddressElement = adFormElement.querySelector('input[name=address]');
   var adFormRoomsElement = adFormElement.querySelector('select[name=rooms]');
   var adFormGuestsElement = adFormElement.querySelector('select[name=capacity]');
+  var adFormTypeElement = adFormElement.querySelector('select[name=type]');
+  var adFormPriceElement = adFormElement.querySelector('input[name=price]');
+  var adFormTimeinElement = adFormElement.querySelector('select[name=timein]');
+  var adFormTimeoutElement = adFormElement.querySelector('select[name=timeout]');
   var mapPinsFieldWidth = mapPinsElement.offsetWidth;
   var mapPinMainWidth = mapPinMainElement.offsetWidth;
   var mapPinMainHeight = mapPinMainElement.offsetHeight;
@@ -72,6 +77,20 @@
 
   adFormGuestsElement.addEventListener('change', function () {
     checkRoomsGuestsCorrespondence();
+  });
+
+  adFormTypeElement.addEventListener('change', function () {
+    var minPrice = OFFER_TYPES_MIN_PRICE[adFormTypeElement.value];
+    adFormPriceElement.placeholder = minPrice;
+    adFormPriceElement.min = minPrice;
+  });
+
+  adFormTimeinElement.addEventListener('change', function () {
+    adFormTimeoutElement.value = adFormTimeinElement.value;
+  });
+
+  adFormTimeoutElement.addEventListener('change', function () {
+    adFormTimeinElement.value = adFormTimeoutElement.value;
   });
 
   window.form = {

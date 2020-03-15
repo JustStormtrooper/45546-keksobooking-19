@@ -8,6 +8,8 @@
 
 
   function createOffer(offer) {
+    deleteOffer();
+
     var cardElement = cardTemplate.cloneNode(true);
     cardElement.querySelector('.popup__title').textContent = offer.offer.title;
     cardElement.querySelector('.popup__text--price').textContent = offer.offer.address;
@@ -37,11 +39,30 @@
 
     cardElement.querySelector('.popup__avatar').src = offer.author.avatar;
 
+    cardElement.querySelector('.popup__close').addEventListener('click', deleteOffer);
+    document.addEventListener('keydown', onEscPress);
+
     document.querySelector('.map__pins').insertAdjacentElement('afterend', cardElement);
   }
 
+  function deleteOffer() {
+    var openedOfferCard = document.querySelector('.map__card');
+    if (openedOfferCard !== null) {
+      openedOfferCard.parentElement.removeChild(openedOfferCard);
+      window.data.removePinActive();
+      document.removeEventListener('keydown', onEscPress);
+    }
+  }
+
+  function onEscPress(evt) {
+    if (evt.key === 'Escape') {
+      deleteOffer();
+    }
+  }
+
   window.card = {
-    createOffer: createOffer
+    createOffer: createOffer,
+    deleteOffer: deleteOffer
   };
 
 })();

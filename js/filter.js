@@ -5,7 +5,7 @@
   var houseTypeElement = mapFilterElement.querySelector('select[name=housing-type');
 
   houseTypeElement.addEventListener('change', function () {
-
+    window.card.deleteOffer();
     window.data.addOfferToMap(getSimilarOfferType(houseTypeElement.value, 'type'));
   });
 
