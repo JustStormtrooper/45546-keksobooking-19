@@ -10,7 +10,7 @@
   });
 
   function getSimilarOfferType(selectedValue, filteredValue) {
-    return window.data.getLoadedData().filter(function (it) {
+    return window.data.getLoadedOffers().filter(function (it) {
       return it.offer !== null && (selectedValue === 'any' ? true : it.offer[filteredValue] === selectedValue);
     });
   }

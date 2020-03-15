@@ -25,6 +25,10 @@
       }
     }
 
+    if (offers[0]) {
+      window.card.createOffer(offers[0]);
+    }
+
     mapPinsElement.appendChild(fragment);
   }
 
@@ -47,14 +51,14 @@
     window.backend.load(onSuccessLoad);
   }
 
-  function getLoadedData() {
+  function getLoadedOffers() {
     return loadedOffers;
   }
 
   window.data = {
     createOffersMap: createOffersMap,
     addOfferToMap: addOfferToMap,
-    getLoadedData: getLoadedData
+    getLoadedOffers: getLoadedOffers
   };
 
 })();
