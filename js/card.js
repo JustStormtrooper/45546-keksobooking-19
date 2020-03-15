@@ -7,7 +7,7 @@
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
 
-  function createOfferCard(offer) {
+  function createOffer(offer) {
     var cardElement = cardTemplate.cloneNode(true);
     cardElement.querySelector('.popup__title').textContent = offer.offer.title;
     cardElement.querySelector('.popup__text--price').textContent = offer.offer.address;
@@ -41,7 +41,7 @@
   }
 
   window.card = {
-    createOfferCard: createOfferCard
+    createOffer: createOffer
   };
 
 })();
