@@ -11,18 +11,18 @@
   var adFormPriceElement = adFormElement.querySelector('input[name=price]');
   var adFormTimeinElement = adFormElement.querySelector('select[name=timein]');
   var adFormTimeoutElement = adFormElement.querySelector('select[name=timeout]');
+  var adFormResetElement = adFormElement.querySelector('.ad-form__reset');
 
   adFormAddressElement.readOnly = true;
 
   function enableAd() {
     adFormElement.classList.remove('ad-form--disabled');
+    window.utils.setElementsState(adFormElement, true);
   }
 
-  function setElementsState(formElement, formItemState) {
-    var formChildren = formElement.children;
-    for (var i = 0; i < formChildren.length; i++) {
-      formChildren[i].disabled = !formItemState;
-    }
+  function disableAd() {
+    adFormElement.classList.add('ad-form--disabled');
+    window.utils.setElementsState(adFormElement, false);
   }
 
   function fillAddressField(x, y, pageState) {
@@ -70,9 +70,21 @@
     adFormTimeinElement.value = adFormTimeoutElement.value;
   });
 
+  adFormElement.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(adFormElement), resetAdForm);
+    evt.preventDefault();
+  });
+
+  adFormResetElement.addEventListener('click', resetAdForm);
+
+  function resetAdForm() {
+    adFormElement.reset();
+    window.map.setPageInactive();
+  }
+
   window.form = {
     enableAd: enableAd,
-    setElementsState: setElementsState,
+    disableAd: disableAd,
     fillAddressField: fillAddressField,
     checkRoomsGuestsCorrespondence: checkRoomsGuestsCorrespondence
   };

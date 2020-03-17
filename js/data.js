@@ -13,13 +13,9 @@
   function addOfferToMap(offers) {
     var fragment = document.createDocumentFragment();
 
-    var currentMapPins = mapPinsElement.querySelectorAll('button[type=button]');
-    for (var i = 0; i < currentMapPins.length; i++) {
-      mapPinsElement.removeChild(currentMapPins[i]);
-    }
-
+    removeOfferFromMap();
     numMapOffers = offers.length < MAX_NUM_OFFERS ? offers.length : MAX_NUM_OFFERS;
-    for (i = 0; i < numMapOffers; i++) {
+    for (var i = 0; i < numMapOffers; i++) {
       if (offers[i].offer !== null) {
         var offerElement = renderOffer(offers[i]);
         fragment.appendChild(offerElement);
@@ -27,6 +23,13 @@
       }
     }
     mapPinsElement.appendChild(fragment);
+  }
+
+  function removeOfferFromMap() {
+    var currentMapPins = mapPinsElement.querySelectorAll('button[type=button]');
+    for (var i = 0; i < currentMapPins.length; i++) {
+      mapPinsElement.removeChild(currentMapPins[i]);
+    }
   }
 
   function renderOffer(offer) {
@@ -66,6 +69,7 @@
   window.data = {
     createOffersMap: createOffersMap,
     addOfferToMap: addOfferToMap,
+    removeOfferFromMap: removeOfferFromMap,
     getLoadedOffers: getLoadedOffers,
     removePinActive: removePinActive
   };
