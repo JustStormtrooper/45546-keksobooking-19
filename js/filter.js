@@ -15,12 +15,12 @@
     });
   }
 
-  function resetMapFilters() {
+  function reset() {
     mapFilterElement.reset();
   }
 
   window.filter = {
-    resetMapFilters: resetMapFilters
+    reset: reset
   };
 
 })();

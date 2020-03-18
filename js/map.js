@@ -38,7 +38,7 @@
 
   function setPageInactive() {
     window.form.disableAd();
-    window.filter.resetMapFilters();
+    window.filter.reset();
     resetMapPinMainCoords();
     hideOfferMap();
     window.card.deleteOffer();
