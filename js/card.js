@@ -40,7 +40,7 @@
     cardElement.querySelector('.popup__avatar').src = offer.author.avatar;
 
     cardElement.querySelector('.popup__close').addEventListener('click', deleteOffer);
-    document.addEventListener('keydown', onEscPress);
+    document.addEventListener('keydown', onEscCardClose);
 
     document.querySelector('.map__pins').insertAdjacentElement('afterend', cardElement);
   }
@@ -50,14 +50,12 @@
     if (openedOfferCard !== null) {
       openedOfferCard.parentElement.removeChild(openedOfferCard);
       window.data.removePinActive();
-      document.removeEventListener('keydown', onEscPress);
+      document.removeEventListener('keydown', onEscCardClose);
     }
   }
 
-  function onEscPress(evt) {
-    if (evt.key === 'Escape') {
-      deleteOffer();
-    }
+  function onEscCardClose(evt) {
+    window.utils.onEscPress(evt, deleteOffer);
   }
 
   window.card = {
