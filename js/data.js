@@ -16,11 +16,9 @@
     removeOfferFromMap();
     numMapOffers = offers.length < MAX_NUM_OFFERS ? offers.length : MAX_NUM_OFFERS;
     for (var i = 0; i < numMapOffers; i++) {
-      if (offers[i].offer !== null) {
-        var offerElement = renderOffer(offers[i]);
-        fragment.appendChild(offerElement);
-        addMapPinListeners(offerElement, offers[i]);
-      }
+      var offerElement = renderOffer(offers[i]);
+      fragment.appendChild(offerElement);
+      addMapPinListeners(offerElement, offers[i]);
     }
     mapPinsElement.appendChild(fragment);
   }
@@ -55,7 +53,7 @@
 
   function onSuccessLoad(data) {
     loadedOffers = data;
-    addOfferToMap(data);
+    window.filter.apply();
   }
 
   function createOffersMap() {
