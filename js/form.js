@@ -1,7 +1,12 @@
 'use strict';
 
 (function () {
-  var OFFER_TYPES_MIN_PRICE = {flat: 1000, bungalo: 0, house: 5000, palace: 10000};
+  var OfferTypeMinPrice = {
+    FLAT: 1000,
+    BUNGALO: 0,
+    HOUSE: 5000,
+    PALACE: 10000
+  };
 
   var adFormElement = document.querySelector('.ad-form');
   var adFormAddressElement = adFormElement.querySelector('input[name=address]');
@@ -57,7 +62,7 @@
   });
 
   adFormTypeElement.addEventListener('change', function () {
-    var minPrice = OFFER_TYPES_MIN_PRICE[adFormTypeElement.value];
+    var minPrice = OfferTypeMinPrice[adFormTypeElement.value.toUpperCase()];
     adFormPriceElement.placeholder = minPrice;
     adFormPriceElement.min = minPrice;
   });
@@ -75,11 +80,15 @@
     evt.preventDefault();
   });
 
-  adFormResetElement.addEventListener('click', resetAdForm);
+  adFormResetElement.addEventListener('click', onResetButtonClick);
 
   function resetAdForm() {
     adFormElement.reset();
     window.map.setPageInactive();
+  }
+
+  function onResetButtonClick() {
+    resetAdForm();
   }
 
   window.form = {

@@ -1,7 +1,12 @@
 'use strict';
 
 (function () {
-  var OFFER_PRICE_FILTER_RANGES = {low: [0, 9999], middle: [10000, 50000], high: [50001, Number.MAX_SAFE_INTEGER]};
+  var MAX_NUM_OFFERS = 5;
+  var OfferPriceFilterRange = {
+    LOW: [0, 9999],
+    MIDDLE: [10000, 50000],
+    HIGH: [50001, Number.MAX_SAFE_INTEGER]
+  };
 
   var mapFilterElement = document.querySelector('.map__filters');
   var houseTypeElement = mapFilterElement.querySelector('select[name=housing-type]');
@@ -21,7 +26,7 @@
   }
 
   function getSimilarOfferPrice(offer) {
-    var selectedPriceRange = OFFER_PRICE_FILTER_RANGES[housePriceElement.value];
+    var selectedPriceRange = OfferPriceFilterRange[housePriceElement.value.toUpperCase()];
     return housePriceElement.value === 'any' ? true : selectedPriceRange[0] <= offer.offer.price && offer.offer.price <= selectedPriceRange[1];
   }
 
@@ -53,7 +58,7 @@
       .filter(getSimilarOfferPrice)
       .filter(getSimilarOfferRooms)
       .filter(getSimilarOfferGuests)
-      .filter(getSimilarOfferFeatures);
+      .filter(getSimilarOfferFeatures).slice(0, MAX_NUM_OFFERS);
 
     return filteredOffers;
   }

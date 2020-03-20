@@ -5,6 +5,11 @@
   var URL_SAVE = 'https://js.dump.academy/keksobooking';
   var TIMEOUT_MS = 10000;
   var XHR_OK_STATUS = 200;
+  var LoadErrorMessage = {
+    XHR_BAD_STATUS: 'Не удалось загрузить объявления. Попробуйте перезагрузить страницу.',
+    ERROR: 'Не удалось загрузить объявления. Пожалуйста, проверьте подключение к сети.',
+    TIMEOUT: 'Не удалось загрузить объявления. Превышено время ожидания. Пожалуйста, проверьте скорость интернет соединения.'
+  };
 
   var successMsgTemplate = document.querySelector('#success').content.querySelector('.success');
   var errorMsgTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -20,16 +25,16 @@
       if (xhr.status === XHR_OK_STATUS) {
         onLoad(xhr.response);
       } else {
-        showLoadErrorMessage('Не удалось загрузить объявления (статус ответа: ' + xhr.status + ').');
+        showLoadErrorMessage(LoadErrorMessage.XHR_BAD_STATUS);
       }
     });
 
     xhr.addEventListener('error', function () {
-      showLoadErrorMessage('Не удалось загрузить объявления. Пожалуйста, проверьте подключение к сети.');
+      showLoadErrorMessage(LoadErrorMessage.ERROR);
     });
 
     xhr.addEventListener('timeout', function () {
-      showLoadErrorMessage('Не удалось загрузить объявления. Превышено время ожидания. Пожалуйста, проверьте скорость интернет соединения.');
+      showLoadErrorMessage(LoadErrorMessage.TIMEOUT);
     });
 
     xhr.open('GET', URL_LOAD);
@@ -65,7 +70,9 @@
   function showLoadErrorMessage(errorMsg) {
     window.utils.setElementsState(document.querySelector('.map__filters'), false);
     var errorElement = document.createElement('div');
-    errorElement.style = 'width:100%; padding: 10px 0; text-align: center;';
+    errorElement.style.width = '100%';
+    errorElement.style.padding = '10px 0';
+    errorElement.style.textAlign = 'center';
     errorElement.style.fontSize = '20px';
     errorElement.style.color = '#f44336';
     errorElement.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
@@ -78,24 +85,32 @@
     addSaveMessageListeners();
     var closeButtonElement = messageElement.querySelector('.error__button');
     if (closeButtonElement !== null) {
-      closeButtonElement.addEventListener('click', closeSaveMessage);
+      closeButtonElement.addEventListener('click', onCloseButtonClick);
     }
     mainSectionElement.appendChild(messageElement);
   }
 
   function addSaveMessageListeners() {
-    document.addEventListener('keydown', onEscCloseSaveMessage);
-    document.addEventListener('click', closeSaveMessage);
+    document.addEventListener('keydown', onDocumentKeydown);
+    document.addEventListener('click', onDocumentClick);
   }
 
   function closeSaveMessage() {
     mainSectionElement.removeChild(mainSectionElement.lastChild);
-    document.removeEventListener('keydown', onEscCloseSaveMessage);
-    document.removeEventListener('click', closeSaveMessage);
+    document.removeEventListener('keydown', onDocumentKeydown);
+    document.removeEventListener('click', onDocumentClick);
   }
 
-  function onEscCloseSaveMessage(evt) {
+  function onDocumentKeydown(evt) {
     window.utils.onEscPress(evt, closeSaveMessage);
+  }
+
+  function onCloseButtonClick() {
+    closeSaveMessage();
+  }
+
+  function onDocumentClick() {
+    closeSaveMessage();
   }
 
   window.backend = {

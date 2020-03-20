@@ -7,10 +7,9 @@
   var lastTimeout;
 
   function setElementsState(formElement, formItemState) {
-    var formChildren = formElement.children;
-    for (var i = 0; i < formChildren.length; i++) {
-      formChildren[i].disabled = !formItemState;
-    }
+    Array.from(formElement.children).forEach(function (it) {
+      it.disabled = !formItemState;
+    });
   }
 
   function onEscPress(evt, evtFunction) {

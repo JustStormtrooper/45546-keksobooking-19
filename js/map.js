@@ -47,8 +47,8 @@
     if (errorLoadElement !== null) {
       errorLoadElement.parentElement.removeChild(errorLoadElement);
     }
-    mapPinMainElement.addEventListener('mousedown', setPageActive);
-    mapPinMainElement.addEventListener('click', setPageActive);
+    mapPinMainElement.addEventListener('mousedown', onMapPinMainMouseDown);
+    mapPinMainElement.addEventListener('click', onMapPinMainClick);
   }
 
   function setPageActive(evt) {
@@ -57,8 +57,8 @@
       showOffers();
       window.form.enableAd();
       window.form.checkRoomsGuestsCorrespondence();
-      mapPinMainElement.removeEventListener('mousedown', setPageActive);
-      mapPinMainElement.removeEventListener('click', setPageActive);
+      mapPinMainElement.removeEventListener('mousedown', onMapPinMainMouseDown);
+      mapPinMainElement.removeEventListener('click', onMapPinMainClick);
     }
   }
 
@@ -74,14 +74,14 @@
       y: startCoords.y
     };
 
-    function onMouseMove(moveEvt) {
+    function onDocumentMouseMove(moveEvt) {
       updateMapPinMainCoords(moveEvt.clientX, moveEvt.clientY);
     }
 
-    function onMouseUp(upEvt) {
+    function onDocumentMouseUp(upEvt) {
       updateMapPinMainCoords(upEvt.clientX, upEvt.clientY);
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('mousemove', onDocumentMouseMove);
+      document.removeEventListener('mouseup', onDocumentMouseUp);
     }
 
     function updateMapPinMainCoords(x, y) {
@@ -119,10 +119,18 @@
       };
     }
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('mousemove', onDocumentMouseMove);
+    document.addEventListener('mouseup', onDocumentMouseUp);
 
   });
+
+  function onMapPinMainMouseDown(evt) {
+    setPageActive(evt);
+  }
+
+  function onMapPinMainClick(evt) {
+    setPageActive(evt);
+  }
 
   setPageInactive();
 
