@@ -3,9 +3,9 @@
 (function () {
   var MAX_NUM_OFFERS = 5;
   var OfferPriceFilterRange = {
-    LOW: [0, 9999],
+    LOW: [0, 10000],
     MIDDLE: [10000, 50000],
-    HIGH: [50001, Number.MAX_SAFE_INTEGER]
+    HIGH: [50000, Number.MAX_SAFE_INTEGER]
   };
 
   var mapFilterElement = document.querySelector('.map__filters');

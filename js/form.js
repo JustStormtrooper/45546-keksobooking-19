@@ -7,6 +7,12 @@
     HOUSE: 5000,
     PALACE: 10000
   };
+  var RoomGuestMap = {
+    1: {guests: [1], validityText: 'Только для одного гостя.'},
+    2: {guests: [1, 2], validityText: 'Один или два гостя.'},
+    3: {guests: [1, 2, 3], validityText: 'От одного до трех гостей.'},
+    100: {guests: [0], validityText: 'Не предназначено для гостей.'},
+  };
 
   var adFormElement = document.querySelector('.ad-form');
   var adFormAddressElement = adFormElement.querySelector('input[name=address]');
@@ -17,6 +23,7 @@
   var adFormTimeinElement = adFormElement.querySelector('select[name=timein]');
   var adFormTimeoutElement = adFormElement.querySelector('select[name=timeout]');
   var adFormResetElement = adFormElement.querySelector('.ad-form__reset');
+  var successMsgTemplate = document.querySelector('#success').content.querySelector('.success');
 
   adFormAddressElement.readOnly = true;
 
@@ -37,20 +44,10 @@
   }
 
   function checkRoomsGuestsCorrespondence() {
-    var rooms = +adFormRoomsElement.value;
+    var roomGuestMap = RoomGuestMap[adFormRoomsElement.value];
     var guests = +adFormGuestsElement.value;
-
-    if (rooms === 1 && guests !== 1) {
-      adFormGuestsElement.setCustomValidity('Только для одного гостя.');
-    } else if (rooms === 2 && (guests > 2 || !guests)) {
-      adFormGuestsElement.setCustomValidity('Один или два гостя.');
-    } else if (rooms === 3 && (guests > 3 || !guests)) {
-      adFormGuestsElement.setCustomValidity('От одного до трех гостей.');
-    } else if (rooms === 100 && guests !== 0) {
-      adFormGuestsElement.setCustomValidity('Не предназначено для гостей.');
-    } else {
-      adFormGuestsElement.setCustomValidity('');
-    }
+    var validityText = roomGuestMap.guests.includes(guests) ? '' : roomGuestMap.validityText;
+    adFormGuestsElement.setCustomValidity(validityText);
   }
 
   adFormRoomsElement.addEventListener('change', function () {
@@ -76,7 +73,7 @@
   });
 
   adFormElement.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adFormElement), resetAdForm);
+    window.backend.save(new FormData(adFormElement), onDataSaveSuccess);
     evt.preventDefault();
   });
 
@@ -89,6 +86,11 @@
 
   function onResetButtonClick() {
     resetAdForm();
+  }
+
+  function onDataSaveSuccess() {
+    resetAdForm();
+    window.utils.showElementMessage(successMsgTemplate);
   }
 
   window.form = {
